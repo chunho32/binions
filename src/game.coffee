@@ -35,10 +35,14 @@ Game = class exports.Game extends EventEmitter
     @deck.shuffle()
     @deck.once 'shuffled', =>
       @deal()
-      @takeBets()
+      setTimeout  =>
+        @takeBets()
+      , 4000
     @on 'roundComplete', =>
       if @deal()
-        @takeBets()
+        setTimeout  =>
+          @takeBets()
+        , 4000
       else
         @settle()
 
@@ -48,7 +52,7 @@ Game = class exports.Game extends EventEmitter
     betOptions = betting.analyze()
     if betOptions
       status = @status(Game.STATUS.NORMAL, betting.nextToAct, betOptions)
-      @emit('playerBetStart',betting.nextToAct)
+      @emit('playerBetStart',betting)
       betting.nextToAct.update status, (err, res) =>
         if err
           @emit("bettingError", err, betting.nextToAct)
